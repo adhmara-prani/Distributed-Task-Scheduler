@@ -161,6 +161,3 @@ module.exports = router;
 1.  **Infrastructure:** You built the server room (Docker).
 2.  **Schema:** You built the filing cabinet (SQL Table).
 3.  **Backend Logic:** You connected the "Request Ride" button to the filing cabinet.
-
-**Next Step:**
-Once you confirm you can send a POST request (using Postman or cURL) and see the data appear in your DBeaver/SQL table, **would you like me to guide you through adding the Kafka Producer logic to that route?**
