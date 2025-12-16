@@ -325,4 +325,11 @@ Next step bol:
 - Testing **sample code**
 - Interview **Q&A from this project**
 
-Ready ho jao bhai 🚀
+## Ready ho jao bhai 🚀
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+docker exec -it ride_app_postgres psql -U user -d ride_sharing
+\q - to exit postgre
+Ctrl + D - to exit docker container shell
+\dt - to check tables or \d rides

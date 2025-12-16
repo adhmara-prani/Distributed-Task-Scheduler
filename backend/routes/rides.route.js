@@ -1,20 +1,19 @@
 import express from "express";
+import {
+  requestRides,
+  getRide,
+  acceptedRide,
+} from "../controllers/rides.controller.js";
 
 const router = express.Router();
 
-router.get("/:id", (req, res) => {
-  console.log("This here is your selected ride!");
-  res.send("Ride selected!");
-});
+// ride selection router
+router.get("/:id", getRide);
 
-router.post("/", (req, res) => {
-  console.log("Rides available in your area!");
-  res.send("Ride available!");
-});
+// request ride router
+router.post("/", requestRides);
 
-router.post("/:id/accept", (req, res) => {
-  console.log("Driver assigned for your destination!");
-  res.send("Driver assigned!");
-});
+// rider assigned router
+router.post("/:id/accept", acceptedRide);
 
 export default router;
