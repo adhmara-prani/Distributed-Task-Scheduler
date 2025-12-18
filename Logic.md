@@ -333,3 +333,6 @@ docker exec -it ride_app_postgres psql -U user -d ride_sharing
 \q - to exit postgre
 Ctrl + D - to exit docker container shell
 \dt - to check tables or \d rides
+
+docker exec for kafka:
+docker exec -it ride_app_kafka //opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic request-ride --from-beginning (double slash before opt for bash and single for powershell)

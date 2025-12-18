@@ -1,24 +1,26 @@
 import pool from "../db/db.js";
+import { publishRideRequest } from "../utils/kafka.util.js";
 
 // request rides logic
 export const requestRides = async (req, res) => {
   try {
-    const { userId, location } = req.body;
-    if (!userId || !location) {
-      return res
-        .status(400)
-        .json({ message: "Either user or location is not defined!" });
+    const { userId, pickup_location, destination } = req.body;
+    if (!userId || !pickup_location || !destination) {
+      return res.status(400).json({
+        message: "Either user or location or destination is not defined!",
+      });
     }
 
     const newRide = await pool.query(
-      "INSERT INTO rides (user_id, pickup_location) VALUES ($1, $2) RETURNING *",
-      [userId, location]
+      "INSERT INTO rides (user_id, status, pickup_location, dropoff_location) VALUES ($1, $2, $3, $4) RETURNING *",
+      [userId, "SEARCHING", pickup_location, destination]
     );
-
-    // KAFKA yaha aayega
 
     const latestRideData = newRide.rows[0];
     console.log(latestRideData);
+
+    // KAFKA yaha aayega
+    await publishRideRequest(latestRideData);
 
     res.status(200).json({
       message: "Request for new driver successful!",
@@ -90,4 +92,5 @@ export const acceptedRide = async (req, res) => {
     status VARCHAR(20) DEFAULT 'SEARCHING', -- SEARCHING, ACCEPTED, COMPLETED
     pickup_location VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    dropoff_location VARCHAR(255)
 ); */

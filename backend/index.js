@@ -2,13 +2,15 @@ import express from "express";
 import ridesRouter from "./routes/rides.route.js";
 import connectToDb from "./connectToDB.js";
 import dotenv from "dotenv";
+import { connectProducer } from "./utils/kafka.util.js";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-connectToDb();
+connectToDb(); // connecting to Postgre
+await connectProducer();
 
 app.use(express.json());
 
