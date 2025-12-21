@@ -58,30 +58,74 @@ export const getRide = async (req, res) => {
 
 // driver accepts ride
 export const acceptedRide = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { driverId } = req.body;
+  const { id } = req.params;
+  const { driverId } = req.body;
 
-    const updateRide = await pool.query(
+  if (!driverId)
+    return res.status(400).json({
+      message: "DriverId is not defined!",
+    });
+
+  const client = await pool.connect();
+
+  try {
+    // begin transaction
+    await client.query("BEGIN");
+
+    // locking rows using transaction (FOR UPDATE)
+    const rideRes = await client.query(
+      "SELECT status FROM rides WHERE id = $1 FOR UPDATE",
+      [id]
+    );
+
+    // error handling if no ride available
+    if (rideRes.rows.length === 0) {
+      await client.query("ROLLBACK");
+      return res.status(404).json({ message: "Ride not found!" });
+    }
+
+    const ride = rideRes.rows[0];
+
+    // concurrency handling
+    if (ride.status !== "SEARCHING") {
+      await client.query("ROLLBACK");
+      return res.status(409).json({
+        message:
+          "Apologies driver, this ride has been accepted by another driver!",
+      });
+    }
+
+    // console.log(
+    //   `Driver ${driverId} has already accepted the ride. Sleeping for 5 sec...`,
+    //   await new Promise((resolve) => setTimeout(resolve, 5000))
+    // );
+
+    // update the taken ride
+    const updateRide = await client.query(
       "UPDATE rides SET driver_id = $1, status = 'ACCEPTED' WHERE id = $2 RETURNING *",
       [driverId, id]
     );
 
-    if (updateRide.rows.length === 0) {
-      return res.status(400).json({ message: "Ride not found!" });
-    }
+    // commit changes and release locking
+    await client.query("COMMIT");
 
     const updateRideData = updateRide.rows[0];
-    console.log(updateRideData);
+    console.log("Ride accepted: ", updateRideData);
+
     res.status(200).json({
-      message: "Driver assigned to your ride!",
-      rides: updateRideData,
+      message: "Driver assigned to your ride and will be arriving shortly!",
+      ride: updateRideData,
     });
   } catch (error) {
+    await client.query("ROLLBACK");
     console.log(error.stack);
-    res
-      .status(500)
-      .json({ message: "Internal Server Error! Driver couldn't be assigned!" });
+    res.status(500).json({
+      message: "Internal Server Error! Driver couldn't be assigned",
+    });
+  } finally {
+    // RELEASE THE CLIENT TO THE POOL
+    // so that application doesn't hang after exceeding pool request limit
+    client.release();
   }
 };
 
