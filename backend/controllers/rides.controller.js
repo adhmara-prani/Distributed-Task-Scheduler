@@ -1,5 +1,6 @@
 import pool from "../db/db.js";
 import { publishRideRequest } from "../utils/kafka.util.js";
+import { publishRideAccepted } from "../utils/kafka.util.js";
 
 // request rides logic
 export const requestRides = async (req, res) => {
@@ -17,9 +18,14 @@ export const requestRides = async (req, res) => {
     );
 
     const latestRideData = newRide.rows[0];
-    console.log(latestRideData);
+
+    const ridePayload = {
+      ...latestRideData,
+      userId: latestRideData.user_id,
+    };
 
     // KAFKA yaha aayega
+    console.log("Publishing to Kafka:", ridePayload);
     await publishRideRequest(latestRideData);
 
     res.status(200).json({
@@ -111,6 +117,8 @@ export const acceptedRide = async (req, res) => {
 
     const updateRideData = updateRide.rows[0];
     console.log("Ride accepted: ", updateRideData);
+
+    await publishRideAccepted(id, driverId);
 
     res.status(200).json({
       message: "Driver assigned to your ride and will be arriving shortly!",

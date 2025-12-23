@@ -8,16 +8,16 @@ import {
 
 const router = express.Router();
 
-// ride selection router
-router.get("/:id", getRide);
+// all available rides
+router.get("/available", getAvailableRides);
 
 // request ride router
 router.post("/", requestRides);
 
+// ride selection router
+router.get("/:id", getRide);
+
 // rider assigned router
 router.post("/:id/accept", acceptedRide);
-
-// all available rides
-router.get("/available", getAvailableRides);
 
 export default router;

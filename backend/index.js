@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import ridesRouter from "./routes/rides.route.js";
 import authRouter from "./routes/auth.route.js";
 import connectToDb from "./connectToDB.js";
@@ -25,6 +26,14 @@ const PORT = process.env.PORT || 5000;
 connectToDb();
 
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 app.use("/auth", authRouter);
 

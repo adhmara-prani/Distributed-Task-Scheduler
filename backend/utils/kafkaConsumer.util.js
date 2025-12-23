@@ -13,17 +13,24 @@ export const connectConsumer = async (io) => {
     await consumer.connect();
     console.log("Consumer connected successfully!");
 
-    await consumer.subscribe({ topic: "request-ride", fromBeginning: true });
+    await consumer.subscribe({
+      topics: ["request-ride", "ride-accepted"],
+      fromBeginning: true,
+    });
 
     await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
-        const rideData = message.value.toString();
+        const rideData = JSON.parse(message.value.toString());
 
-        console.log(`Recieved Ride Request succesfully : ${rideData}`);
-
-        // data is emitted through websocket to all avaiable channels/drivers
-        io.emit("new-ride-available", JSON.parse(rideData));
-        console.log("Broadcasted to all drivers nearby successfully!");
+        if (topic === "request-ride") {
+          io.emit("new-ride-available", rideData);
+          console.log("Broadcast new ride");
+        } else if (topic === "ride-accepted") {
+          io.emit("ride-taken", rideData);
+          console.log(
+            `Broadcast ride #${rideData.rideId} taken by driver #${rideData.driverId}`
+          );
+        }
       },
     });
   } catch (error) {
