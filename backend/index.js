@@ -1,5 +1,6 @@
 import express from "express";
 import ridesRouter from "./routes/rides.route.js";
+import authRouter from "./routes/auth.route.js";
 import connectToDb from "./connectToDB.js";
 import dotenv from "dotenv";
 import http from "http";
@@ -24,6 +25,8 @@ const PORT = process.env.PORT || 5000;
 connectToDb();
 
 app.use(express.json());
+
+app.use("/auth", authRouter);
 
 app.use("/rides", ridesRouter);
 

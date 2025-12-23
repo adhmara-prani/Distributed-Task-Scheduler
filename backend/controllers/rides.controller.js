@@ -50,9 +50,9 @@ export const getRide = async (req, res) => {
     res.status(200).json({ ride: rideData });
   } catch (error) {
     console.log(error.stack);
-    res
-      .status(500)
-      .json({ message: "Internal Server Error! Couldn't fetch ride status!" });
+    res.status(500).json({
+      message: "Internal Server Error! Couldn't fetch rides in the vicinity",
+    });
   }
 };
 
@@ -126,6 +126,23 @@ export const acceptedRide = async (req, res) => {
     // RELEASE THE CLIENT TO THE POOL
     // so that application doesn't hang after exceeding pool request limit
     client.release();
+  }
+};
+
+// get all available rides
+export const getAvailableRides = async (req, res) => {
+  try {
+    const rides = await pool.query(
+      "SELECT * FROM rides WHERE status = $1 ORDER BY created_at DESC",
+      ["SEARCHING"]
+    );
+
+    res.status(200).json(rides.rows);
+  } catch (error) {
+    console.log(error.stack);
+    res.status(500).json({
+      message: "Error fetching the available rides! Please try again later!",
+    });
   }
 };
 

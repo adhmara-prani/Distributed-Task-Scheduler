@@ -3,6 +3,7 @@ import {
   requestRides,
   getRide,
   acceptedRide,
+  getAvailableRides,
 } from "../controllers/rides.controller.js";
 
 const router = express.Router();
@@ -15,5 +16,8 @@ router.post("/", requestRides);
 
 // rider assigned router
 router.post("/:id/accept", acceptedRide);
+
+// all available rides
+router.get("/available", getAvailableRides);
 
 export default router;
