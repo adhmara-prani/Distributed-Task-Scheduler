@@ -14,6 +14,10 @@ Two UI (one for user & one for driver):
 ## User:
 
 [] List of available drivers in the nearby location
-[] Google Maps API integration must (showing current location of the user)
+[] Leaflet integration must (showing current location of the user)
 [] Pickup and Destination box to interact and request ride from the frontend
 [] Toast to show ride assigned successfully or failed to assign a driver, etc.
+
+### ------------------------------------------------------------------------------------------------------------------------------------
+
+Sometimes the hardest part isn’t responding — it’s choosing who to send

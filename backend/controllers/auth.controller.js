@@ -26,17 +26,18 @@ export const signup = async (req, res) => {
       return res.status(400).json({ message: "User already exists!" });
     }
 
-    const salt = bcrypt.genSalt(10);
-    const hashedPassword = bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await pool.query(
       "INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role",
       [name, email, hashedPassword, role]
     );
 
-    res
-      .status(201)
-      .json({ message: "User created successfully!", user: newUser.rows[0] });
+    res.status(201).json({
+      message: "User created successfully!",
+      user: newUser.rows[0],
+      token: generateToken(newUser.rows[0]),
+    });
   } catch (error) {
     console.log(error.stack);
     res.status(500).json("Internal Server Error! Signup was unsuccessful!");
@@ -59,7 +60,7 @@ export const login = async (req, res) => {
 
     const user = loginData.rows[0];
 
-    const isMatch = bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res
         .status(400)
@@ -70,18 +71,23 @@ export const login = async (req, res) => {
       expiresIn: "1h",
     });
 
-    res.json({
+    res.status(200).json({
+      message: "Login successful!",
       token,
       user: { id: user.id, name: user.name, role: user.role },
     });
-
-    res.status(200).json({ message: "Login successful!" });
   } catch (error) {
     console.log(error.stack);
     res
       .status(500)
       .json({ message: "Internal Server Error! Login was unsuccessful!" });
   }
+};
+
+const generateToken = (user) => {
+  return jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, {
+    expiresIn: "1h",
+  });
 };
 
 // export const logout = async (req, res) => {

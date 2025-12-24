@@ -1,65 +1,22 @@
-import { useState, useEffect } from "react";
-import DriverDashboard from "./pages/DriverDashboard.jsx"; // Adjust path if needed
+import { Routes, Route, Navigate } from "react-router-dom";
+import DriverDashboard from "./pages/DriverDashboard.jsx";
+import UserDashboard from "./pages/UserDashboard.jsx";
+import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
 
 function App() {
-  const [driverId, setDriverId] = useState(
-    localStorage.getItem("userId") || ""
-  );
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    !!localStorage.getItem("userId")
-  );
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (!driverId) return;
-
-    // Save to local storage so DriverDashboard can read it
-    localStorage.setItem("userId", driverId);
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("userId");
-    setDriverId("");
-    setIsLoggedIn(false);
-  };
-
   return (
     <div className="App">
-      {!isLoggedIn ? (
-        // --- 1. SIMPLE LOGIN SCREEN ---
-        <div style={styles.container}>
-          <h1>Ride App Simulation 🚖</h1>
-          <div style={styles.card}>
-            <h2>Driver Login</h2>
-            <form onSubmit={handleLogin}>
-              <input
-                type="text"
-                placeholder="Enter Driver ID (e.g., 101)"
-                value={driverId}
-                onChange={(e) => setDriverId(e.target.value)}
-                style={styles.input}
-              />
-              <button type="submit" style={styles.button}>
-                Start Driving
-              </button>
-            </form>
-          </div>
-        </div>
-      ) : (
-        // --- 2. THE DASHBOARD ---
-        <div>
-          <div style={styles.header}>
-            <span>
-              Logged in as: <strong>{driverId}</strong>
-            </span>
-            <button onClick={handleLogout} style={styles.logoutBtn}>
-              Logout
-            </button>
-          </div>
-          <DriverDashboard />
-        </div>
-      )}
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
+        <Route path="/driver-dashboard" element={<DriverDashboard />} />
+
+        <Route path="/user-dashboard" element={<UserDashboard />} />
+      </Routes>
     </div>
   );
 }
@@ -117,3 +74,27 @@ const styles = {
 };
 
 export default App;
+
+/*
+const [driverId, setDriverId] = useState(
+    localStorage.getItem("userId") || ""
+  );
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    !!localStorage.getItem("userId")
+  );
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (!driverId) return;
+
+    // Save to local storage so DriverDashboard can read it
+    localStorage.setItem("userId", driverId);
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userId");
+    setDriverId("");
+    setIsLoggedIn(false);
+  };
+  */
