@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api/axios.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -6,16 +8,61 @@ const UserDashboard = () => {
   const userId = localStorage.getItem("userId");
   const [pickup, setPickup] = useState("");
   const [dropoff, setDropoff] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleRequestRide = (e) => {
+  const nav = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    nav("/login");
+  };
+
+  const handleRequestRide = async (e) => {
     e.preventDefault();
-    // Logic to call API will go here
+
+    if (!userId) {
+      toast.error("User Id missing! Please try to login again!");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await api.post("/rides", {
+        userId: userId,
+        pickup_location: pickup,
+        destination: dropoff,
+      });
+
+      console.log("Ride requested: ", response.data);
+
+      toast.success("Ride requested successfully!");
+
+      setPickup("");
+      setDropoff("");
+    } catch (error) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Failed to request ride. Try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+
     toast.info(`Requesting ride from ${pickup} to ${dropoff}...`);
   };
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-6">
+        <button
+          onClick={handleLogout}
+          className="absolute top-4 right-4 text-sm text-red-500 hover:text-red-700 underline"
+        >
+          Logout
+        </button>
         <h1 className="text-2xl font-bold mb-4 text-gray-800">
           User Dashboard 🙋‍♂️
         </h1>

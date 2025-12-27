@@ -2,7 +2,7 @@ Two UI (one for user & one for driver):
 
 ## Common to both:
 
-[] Login/Signup page
+[X] Login/Signup page
 [] Logout button/feature
 
 ## Driver:

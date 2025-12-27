@@ -336,3 +336,14 @@ Ctrl + D - to exit docker container shell
 
 docker exec for kafka:
 docker exec -it ride_app_kafka //opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic request-ride --from-beginning (double slash before opt for bash and single for powershell)
+
+Remaining steps to follow:
+
+1. Add logout button and logic - [X]
+2. Redirect get started to login page and show landing page by default - [X]
+3. Make driver dashboard top notch - [X]
+4. Make user dashboard top notch - []
+5. VITE_BASE_URL
+6. Integrate user logic from frontend - [X]
+7. Testing
+8. // https://www.youtube.com/watch?v=kKb_HoZb3NI

@@ -3,12 +3,13 @@ import DriverDashboard from "./pages/DriverDashboard.jsx";
 import UserDashboard from "./pages/UserDashboard.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
+import LandingPage from "./pages/LandingPage.jsx";
 
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<LandingPage />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -20,58 +21,6 @@ function App() {
     </div>
   );
 }
-
-// Simple styles for the demo
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100vh",
-    backgroundColor: "#f0f2f5",
-  },
-  card: {
-    padding: "2rem",
-    backgroundColor: "white",
-    borderRadius: "10px",
-    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-    textAlign: "center",
-  },
-  input: {
-    padding: "10px",
-    fontSize: "16px",
-    marginBottom: "10px",
-    width: "200px",
-    display: "block",
-    margin: "10px auto",
-  },
-  button: {
-    padding: "10px 20px",
-    backgroundColor: "#007bff",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "16px",
-  },
-  header: {
-    padding: "10px 20px",
-    backgroundColor: "#333",
-    color: "white",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  logoutBtn: {
-    backgroundColor: "red",
-    color: "white",
-    border: "none",
-    padding: "5px 10px",
-    cursor: "pointer",
-    borderRadius: "3px",
-  },
-};
 
 export default App;
 
