@@ -13,7 +13,7 @@ export const TopBar = ({ driverId, onLogout }) => {
     <div className="border-b px-4 mb-4 mt-2 pb-4 border-stone-200">
       <div className="flex items-center justify-between p-0.5">
         <div>
-          <span className="text-lg font-bold block">Driver Dashboard</span>
+          <span className="text-lg font-bold block">User Dashboard</span>
           <span className="text-sm block text-stone-500">ID: #{driverId}</span>
         </div>
 
